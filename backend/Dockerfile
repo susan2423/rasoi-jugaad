@@ -1,9 +1,9 @@
 FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
+COPY settings.xml /root/.m2/settings.xml
 COPY pom.xml .
-RUN mvn -q dependency:go-offline
 COPY src ./src
-RUN mvn -q clean package -DskipTests
+RUN mvn -s /root/.m2/settings.xml -B -q clean package -DskipTests -Dmaven.wagon.http.retryHandler.count=5
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
